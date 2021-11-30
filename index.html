@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Pretendr</title>
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧙</text></svg>">
+</head>
+
+<body>
+    <!-- messages -->
+    <ul id="messages"></ul>
+
+    <!-- form  -->
+    <form id="form" action="">
+        <label for="nickname" id="label">sending messages as:</label>
+        <input id="nickname" autocomplete="off" value="anonymous" />
+        <br><br>
+        <input id="input" autocomplete="off" placeholder="type here..." /><button>Send</button>
+    </form>
+
+    <!-- socket.io scripts 👇  -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io();
+
+        var label = document.getElementById('label');
+        var nickname = document.getElementById('nickname');
+        var messages = document.getElementById('messages');
+        var form = document.getElementById('form');
+        var input = document.getElementById('input');
+
+
+        //nickname button
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            if (input.value && nickname.value) {
+                nickname.remove();
+                label.remove();
+                let data = { text: input.value, nickname: nickname.value };
+                socket.emit('chat message', data);
+                input.value = '';
+            }
+        });
+
+        //recieve messages from yourself after sending them
+        socket.on('chat message', function (msg) {
+            var item = document.createElement('li');
+            item.textContent = msg;
+            messages.appendChild(item);
+            window.scrollTo(0, document.body.scrollHeight);
+        });
+
+        //getting older messages
+        socket.on('history'), function(logOfMessages){
+        // socket.on('history'), function(){
+            console.log('connected to server :)')
+            // logOfMessages.forEach(element => {
+            // var item = document.createElement('li');
+            // item.textContent = element.nickname + ": " + element.text;
+            // messages.appendChild(item);
+            // });
+        }
+    </script>
+</body>
+
+</html>
