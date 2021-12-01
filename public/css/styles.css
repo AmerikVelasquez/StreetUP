@@ -1,0 +1,39 @@
+body {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.banner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+  background-image: linear-gradient(to bottom right, lightblue, rgb(238, 148, 238));
+  width: 100vw;
+  height: 100vh;
+}
+
+h1 {
+  font-size: 4em;
+}
+
+#input {
+  cursor: pointer;
+  display: inline-block;
+  text-decoration: none;
+  color: black;
+  background-color: rgb(162, 140, 214);
+  padding: 0.5em 1.25em;
+  border-radius: 0.25em;
+}
+
+audio {
+  margin-top: 1em;
+  padding-top: 1em;
+}
+
+#shoe {
+  display: none;
+}
