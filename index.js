@@ -2,36 +2,24 @@ const app = require('express')();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const port = process.env.PORT || 3000;
-let listOfUsers = [];
-let logOfMessages = ['look a message!', 'look another one!'];
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
 
-// io.on('connection', socket => {
-//   console.log(`user connected! [id=${socket.id}]`);
-//   io.emit('history');
-//   // socket.emit('history', logOfMessages);
-// });
+let playerList = [];
 
 io.on('connection', (socket) => {
   console.log(`user connected! [id=${socket.id}]`);
   socket.on('chat message', msg => {
-    messageController(msg);
-    console.log(msg.nickname + ": " + msg.text);
-    io.emit('chat message', msg.nickname + ": " + msg.text);
+    console.log(`user: ${socket.id}, ${msg.realName} has joined as ${msg.charName}: ${msg.charDesc}`);
+    io.emit('chat message', `${msg.realName} has joined the game.`); //this will go to index.html
+    playerList.push({"id": socket.id, "name": msg.realName, "charName" : msg.charName, "charDesc": msg.charDesc }); //push new player info to the playerlist for future reference
+    console.log(playerList);
+    io.to(playerList[0].id).emit('chat message', 'for your eyes only');
   });
 });
 
 http.listen(port, () => {
   console.log(`server running at http://localhost:${port}/`);
 });
-
-function messageController(msg) {
-  if (listOfUsers.includes(msg.nickname) == false)//check if user has typed in chat before
-  {
-    listOfUsers.push(msg.nickname);
-  }
-  logOfMessages.push(msg.nickname + ": " + msg.text);
-}

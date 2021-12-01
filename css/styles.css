@@ -1,0 +1,9 @@
+body {
+  background-color: lightblue;
+}
+
+.banner {
+  background-image: linear-gradient(to bottom right, lightblue, rgb(238, 148, 238));
+  width: 100mw;
+  height: 100mh;
+}
