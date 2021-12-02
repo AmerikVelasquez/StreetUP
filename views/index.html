@@ -16,12 +16,18 @@
 <body>
     <header>
         <div class="banner">
-            <form id="startForm" action="">
-                <h1>&#129354 StreetUP 💉 </h1>
-                <label for="realName" id="label">Your Name:</label>
-                <input id="realName" autocomplete="off" placeholder="zark muckerburg" required />
-                <br><br>
-                <button type="submit">Let's Go</button>
+            <form id="startForm">
+                <h1 class="title">StreetUP</h1>
+                <h1>🥊&nbsp;&nbsp;&nbsp;⚔️&nbsp;&nbsp;&nbsp;💉</h1>
+                <p class="label">Your Name:</p>
+                    <input class="form-control" id="realName" autocomplete="off" placeholder="zark muckerburg" required />
+                    <br>
+                    <button type="submit" class="btn btn-dark">Let's Fight</button>
+                    <br><br>
+                    <details class="rules">
+                        <summary>Rules:</summary>
+                    Explain how to play the game.
+                    </details>
             </form>
             <!-- <audio controls loop id="shoe"
                 src="https://download1519.mediafire.com/0f4iq8cgthng/5ca7kpuymrnt5xo/shoes.mp3"></audio> -->
@@ -30,9 +36,10 @@
 
     <section class="waitingRoom">
         <div class="container">
-            <h1 id="waitTitle">Waiting for other players...</h1>
-            <div id="playerCards"></div>
+            <h1 id="waitTitle">Waiting for other players.</h1>
         </div>
+        <div id="buttonSpot"></div>
+
     </section>
 </body>
 

@@ -34,7 +34,7 @@ socket.on("waitingRoomLog", function (game) {
   $("div#playerCards").remove(); //remove playerCards (this happens everytime someone joins to prevent duplicates)
   $("section.waitingRoom").append(`<div id="playerCards"></div>`) //append incoming user real names
   game.forEach(element => {
-      $("div#playerCards").append(`<li>${element}</li>`); //jquery magic
+      $("div#playerCards").append(`<li>${element} | Fighter </li>`); //jquery magic
   });
   //make the waiting room div visible
   $("section.waitingRoom").show();
@@ -42,10 +42,7 @@ socket.on("waitingRoomLog", function (game) {
 
 // utilize dynamically created button to start the game (this is probbaly broken right now)
 socket.on("button", function (game) {
-  var item = document.createElement("button"); //there's alot of vanilla js i want to clean up with jquery but don't have time today.
-  item.setAttribute("id", "startGame");
-  item.textContent = game;
-  $("div#playerCards").append(item);
+  $("div#buttonSpot").append(`<button id="startGame" class="btn btn-dark">Start the fight</button>`);
   window.scrollTo(0, document.body.scrollHeight);
   //event listener for start game button... must be defined after it has been dynamically added.
   $("#startGame").click(function () {

@@ -39,6 +39,10 @@ h1 {
   border-radius: 0.25em;
 }
 
+input#realName{
+  text-align: center;
+}
+
 audio {
   margin-top: 1em;
   padding-top: 1em;
@@ -62,19 +66,41 @@ audio {
   justify-content: center;
   text-align: center;
   padding-top: 1em;
+  color: white;
 }
 
 #playerCards li {
   display: flex;
   justify-content: center;
   text-align: center;
-  border: 2px solid black;
-  padding: 3em;
+  border: 2px solid white;
+  padding: 1em;
   margin-left: 7em;
   margin-top: 5em;
   width: 33vw;
   max-width: 750px;
   float: left;
-  background: lightblue;
-  border-radius: 0.25em;
+  color: white;
+  background: transparent;
+  /* backdrop-filter: blur(60px); */
+  border-radius: 0.50em;
+}
+
+.title{
+  color: white;
+}
+
+.label{
+  color: white;
+  font-weight: bold;
+}
+
+.rules{
+  color: white;
+}
+
+button#startGame{
+  position: absolute;
+  margin-top: 10px;
+  left: 50%;
 }

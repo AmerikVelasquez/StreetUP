@@ -30,7 +30,7 @@ let charType = "";
 
 io.on("connection", (socket) => {
   //when a user connects
-  //console.log(`client connected with id: [id=${socket.id}]`); //debug id
+  console.log(`client connected with id: [id=${socket.id}]`); //debug id
 
   socket.on("enrollment", (game) => {
     if (game.realName) {
@@ -44,30 +44,30 @@ io.on("connection", (socket) => {
         userType: charType,
       }); //fin!
 
-      //console.log(playerList); //debug
-      //console.log("number of players: " + playerList.length); //debug
+      console.log(playerList); //debug
+      console.log("number of players: " + playerList.length); //debug
 
       realNameList = []; //reset array to avoid duplicates
       playerList.forEach((element) => {
         //create array of just player's real names to emit to front end
         realNameList.push(element.realName); //array manipulation
       });
-      //console.log("real name list array:");
-      //console.log(realNameList); //debug
+      console.log("real name list array:");
+      console.log(realNameList); //debug
 
       io.to("waitingRoom").emit("waitingRoomLog", realNameList); //emit to all sockets (users/clients) in the waiting room
       if(playerList.length == 4){
       
       io.to(playerList[0].id).emit("button", "Start The Game"); //emit the start game button to the first player who has joined the waiting room... this is probably broken right now.
       }
-      //console.log("clients in waiting room"); //debug
-      //console.log(io.sockets.adapter.rooms.get("waitingRoom")); //debug- this command will let us know what sockets are in the waiting room.
+      console.log("clients in waiting room"); //debug
+      console.log(io.sockets.adapter.rooms.get("waitingRoom")); //debug- this command will let us know what sockets are in the waiting room.
     } else {
-      //console.log("invalid character name!"); //idfk maybe this works maybe it doesn't we probably won't ever test it to find out lol
+      console.log("invalid character name!"); //idfk maybe this works maybe it doesn't we probably won't ever test it to find out lol
     }
 
-    //console.log(playerList); //debug
-    //console.log("current player count: " + playerList.length); //debug (i put this here specifially because we do alot of array manipulations and putting this console log before would probably cause brain fucks.)
+    console.log(playerList); //debug
+    console.log("current player count: " + playerList.length); //debug (i put this here specifially because we do alot of array manipulations and putting this console log before would probably cause brain fucks.)
   });
 
   socket.on("startGame", (socket) => { //when the start game button is pressed
