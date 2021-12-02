@@ -13,6 +13,12 @@ body {
   background-image: linear-gradient(to bottom right, lightblue, rgb(238, 148, 238));
   width: 100vw;
   height: 100vh;
+  margin-bottom:0 auto;
+  padding-bottom:0 auto;
+}
+
+.hidden {
+  display: none;
 }
 
 h1 {
@@ -36,4 +42,36 @@ audio {
 
 #shoe {
   display: none;
+}
+
+.waitingRoom {
+  background-image: linear-gradient(to top right, coral, navy);
+  width:100vw;
+  height: auto;
+  min-height: 100vh;
+  padding-top:0;
+  margin-top:0;
+}
+
+#waitTitle {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  padding-top: 1em;
+}
+
+#playerCards li {
+  display:flex;
+  justify-content: center;
+  text-align: center;
+  border: 2px solid black;
+  padding: 3em;
+  margin-left: 7em;
+  margin-top: 5em;
+  width: 33vw;
+  max-width:750px;
+  float:left;
+  background: lightblue;
+  border-radius: 0.25em;
+  
 }

@@ -11,25 +11,24 @@
 
 <body>
     <header>
-
-        <div class="banner">
+        <div class="banner" id="userCreate">
                 <form id="startForm" action="">
                 <h1>&#129354 StreetUP 💉 </h1>
                     <label for="realName" id="label">Your Name:</label>
                     <input id="realName" autocomplete="off" placeholder="zark muckerburg" required />
-                    <label for="charName" id="label">Character Name:</label>
-                    <input id="charName" autocomplete="off" placeholder="glizzy" required />
-                    <label for="charDesc" id="label">Character Description:</label>
-                    <input id="charDesc" autocomplete="off" placeholder="just a hod dog not a glock" required />
                     <br><br>
                     <button id="input" type="submit">Create character</button>
                 </form>
             <audio controls loop id="shoe" src="https://download1519.mediafire.com/0f4iq8cgthng/5ca7kpuymrnt5xo/shoes.mp3"></audio>
         </div>
-
     </header>
-    <!-- messages -->
-    <ul id="messages"></ul>
+
+    <section class="waitingRoom">
+        <div class="container">
+            <h1 id="waitTitle">Waiting for other players...</h1>
+            <div id="playerCards"></div>
+        </div>
+    </section>
 </body>
 
 <script src="/js/websocket.js" type="text/javascript"></script>
