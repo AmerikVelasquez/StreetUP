@@ -23,9 +23,9 @@ app.get("/scripts.js", function (req, res) {
 //end boilerplate code
 
 //we should probably figure out a way to make these variables not global lmfao
-let realNameList = [];
+let charNameList = [];
 let playerList = [];
-let charType = "";
+let spectatorList = [];
 //--------------------
 
 io.on("connection", (socket) => {
@@ -33,33 +33,36 @@ io.on("connection", (socket) => {
   console.log(`client connected with id: [id=${socket.id}]`); //debug id
 
   socket.on("enrollment", (game) => {
-    if (game.realName) {
-      //check if that the user actually submitted something (honeslty i haven't tested this... in principle it should work and nothing has broken yet...)
+    if (game.charName) {
+      //check if that the user actually submitted something.
       socket.join("waitingRoom"); //throw the user ("socket." will grab the current user) into the waiting room. This also creates the room "waitingRoom"
-      playerList.push({
-        //if all is well push data to global variable playerList
-        id: socket.id,
-        realName: game.realName,
-        score: 0,
-        userType: charType,
-      }); //fin!
+      if (playerList.length < 4) { //if the playerList of the waiting room is less than 4 designate a user as a "player"
+        playerList.push({
+          id: socket.id,
+          charName: game.charName,
+          charDesc: game.charDesc,
+          charType: "player",
+          score: 0,
+        }); //fin!
+      } else { //if not- designate them as a spectator.
+        spectatorList.push({ id: socket.id, charType: "spectator" });
+      }
 
       console.log(playerList); //debug
-      console.log("number of players: " + playerList.length); //debug
+      console.log("number of fighters: " + playerList.length); //debug
 
-      realNameList = []; //reset array to avoid duplicates
-      playerList.forEach((element) => {
-        //create array of just player's real names to emit to front end
-        realNameList.push(element.realName); //array manipulation
-      });
-      console.log("real name list array:");
-      console.log(realNameList); //debug
+      console.log(spectatorList); //debug
+      console.log("number of spectators: " + spectatorList.length); //debug
 
-      io.to("waitingRoom").emit("waitingRoomLog", realNameList); //emit to all sockets (users/clients) in the waiting room
-      if(playerList.length == 4){
-      
-      io.to(playerList[0].id).emit("button", "Start The Game"); //emit the start game button to the first player who has joined the waiting room... this is probably broken right now.
+      io.to("waitingRoom").emit("waitingRoomLog", playerList); //emit to all sockets (users/clients) in the waiting room
+      if (playerList.length == 4 && spectatorList.length == 0) {//check if there are four players + no spectators to append the startGame button
+        io.to(playerList[0].id).emit("button", "Start The Game"); //emit the start game button to the first player who has joined the waiting room... this is probably broken right now.  
       }
+      if (playerList.length == 4 && spectatorList.length > 0){
+        io.to("waitingRoom").emit("gameReady"); //if there is the required players emit the "ready" heading to all clients
+      }
+      io.to("waitingRoom").emit("updateSpecCount", spectatorList); //update the spectator count
+
       console.log("clients in waiting room"); //debug
       console.log(io.sockets.adapter.rooms.get("waitingRoom")); //debug- this command will let us know what sockets are in the waiting room.
     } else {
@@ -70,7 +73,8 @@ io.on("connection", (socket) => {
     console.log("current player count: " + playerList.length); //debug (i put this here specifially because we do alot of array manipulations and putting this console log before would probably cause brain fucks.)
   });
 
-  socket.on("startGame", (socket) => { //when the start game button is pressed
+  socket.on("startGame", (socket) => {
+    //when the start game button is pressed
     console.log("start button has been pressed- start the game!"); //do the stuff later (further down the road.)
   });
 });

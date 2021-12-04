@@ -20,9 +20,9 @@ var socket = io();
 //when you submit the form which asks for your real name.
 $("form#startForm").submit(function () {
   event.preventDefault();
-  if ($("input#realName").val()) {
+  if ($("input#charName").val() || $("input#charDesc").val()) {
     let data = {
-      realName: realName.value,
+      charName: charName.value, charDesc: charDesc.value
     };
     socket.emit("enrollment", data);
   }
@@ -32,9 +32,9 @@ $("form#startForm").submit(function () {
 socket.on("waitingRoomLog", function (game) {
   $("div.banner").remove(); //remove previous form
   $("div#playerCards").remove(); //remove playerCards (this happens everytime someone joins to prevent duplicates)
-  $("section.waitingRoom").append(`<div id="playerCards"></div>`) //append incoming user real names
+  $("div#withinContainer").append(`<div id="playerCards"></div>`) //append incoming user real names
   game.forEach(element => {
-      $("div#playerCards").append(`<li>${element} | Fighter </li>`); //jquery magic
+      $("div#playerCards").append(`<li>${element.charName} | ${element.charDesc} </li>`); //jquery magic
   });
   //make the waiting room div visible
   $("section.waitingRoom").show();
@@ -43,9 +43,18 @@ socket.on("waitingRoomLog", function (game) {
 // utilize dynamically created button to start the game (this is probbaly broken right now)
 socket.on("button", function (game) {
   $("div#buttonSpot").append(`<button id="startGame" class="btn btn-dark">Start the fight</button>`);
-  window.scrollTo(0, document.body.scrollHeight);
-  //event listener for start game button... must be defined after it has been dynamically added.
+  //event listener for start game button... must be defined after it has been dynamically added
   $("#startGame").click(function () {
     socket.emit("startGame");
   });
 });
+
+//when the game is ready (has 4 players) emit to all users within the waiting room
+socket.on("gameReady", function (game) {
+  $("h1#waitingStatus").html("Ready! Waiting to start the fight.")
+})
+
+//change spectator count on DOM on emit from server
+socket.on("updateSpecCount", function (game){
+  $("p#specCount").html(`There are currently ${game.length} spectators.`)
+})

@@ -39,10 +39,6 @@ h1 {
   border-radius: 0.25em;
 }
 
-input#realName{
-  text-align: center;
-}
-
 audio {
   margin-top: 1em;
   padding-top: 1em;
@@ -61,7 +57,7 @@ audio {
   display: none;
 }
 
-#waitTitle {
+.waitTitle {
   display: flex;
   justify-content: center;
   text-align: center;
@@ -86,21 +82,12 @@ audio {
   border-radius: 0.50em;
 }
 
-.title{
+.title,
+.rules{
   color: white;
 }
 
 .label{
   color: white;
   font-weight: bold;
-}
-
-.rules{
-  color: white;
-}
-
-button#startGame{
-  position: absolute;
-  margin-top: 10px;
-  left: 50%;
 }
