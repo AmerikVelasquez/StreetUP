@@ -28,21 +28,43 @@
                     <br><br>
                     <details class="rules">
                         <summary>Rules:</summary>
-                    Explain how to play the game.
+                        <ol>
+                            <li>Create character</li>
+                            <li>For each question submit your answer</li>
+                            <li>Votes are converted to points</li>
+                            <li>Player with the most points will be the victor</li>
+                        </ol>
                     </details>
             </form>
             <!-- <audio controls loop id="shoe"
                 src="https://download1519.mediafire.com/0f4iq8cgthng/5ca7kpuymrnt5xo/shoes.mp3"></audio> -->
         </div>
     </header>
-
-    <section class="waitingRoom">
+    
+    <section class="hidden waitingRoom">
         <div id="withinContainer" class="container">
             <h1 id="waitingStatus" class="waitTitle">Waiting for other players.</h1>
             <p id="specCount" class="waitTitle"></p>
             <div class="waitTitle" id="buttonSpot"></div>
         </div>
     </section>
+    <div id="hiddenRoundOne" class="hidden">
+        <div id ="roundOne" class="container" >
+            <h1 id = "questionOneName"></h1>
+            <form id="questionOneForm">
+                <label for="answerOne">Answer:</label>
+                <input class="form-control" id="answerOne" autocomplete="off" placeholder="Helen Keller" style="text-align: center;" required />
+                <button type="submit" id="questionOneSubmit">Submit Answer!</button>
+            </form>
+        </div>
+    </div>
+    <div id="hiddenVoteOne" class="hidden">
+        <div id="votingOne" class="hidden container">
+            <h1>Vote on which answer is best!</h1>
+            <div id="selectableAnswers"></div>
+        </div>
+    </div>
+    
 
 </body>
 

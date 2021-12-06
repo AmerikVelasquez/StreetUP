@@ -6,14 +6,12 @@ const io = require("socket.io")(http);
 const port = process.env.PORT || 3000;
 var path = require("path");
 
+
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/views/index.html");
   app.use(express.static(path.join(__dirname, "public")));
   app.use("/jquery", express.static(__dirname + "/node_modules/jquery/dist/"));
-  app.use(
-    "/bootstrap",
-    express.static(__dirname + "/node_modules/bootstrap/dist/")
-  );
+  app.use("/bootstrap", express.static(__dirname + "/node_modules/bootstrap/dist/"));
 });
 
 app.get("/scripts.js", function (req, res) {
@@ -26,6 +24,9 @@ app.get("/scripts.js", function (req, res) {
 let charNameList = [];
 let playerList = [];
 let spectatorList = [];
+const questionsArray = ["What is the best item to bring to a deserted island?", "Who would be the best teammate in a zombie apocalypse?", "What is the worst U.S. state?", "What is the oddest superpower?", "What is the best Disney/Pixar movie?", "Things you shouldn't say to your grandma?", "What are the worst pet names?", "If you could bring back one person, who would it be?" ];
+let answerArr = []
+
 //--------------------
 
 io.on("connection", (socket) => {
@@ -47,6 +48,7 @@ io.on("connection", (socket) => {
       } else { //if not- designate them as a spectator.
         spectatorList.push({ id: socket.id, charType: "spectator" });
       }
+      
 
       console.log(playerList); //debug
       console.log("number of fighters: " + playerList.length); //debug
@@ -55,7 +57,7 @@ io.on("connection", (socket) => {
       console.log("number of spectators: " + spectatorList.length); //debug
 
       io.to("waitingRoom").emit("waitingRoomLog", playerList); //emit to all sockets (users/clients) in the waiting room
-      if (playerList.length == 4 && spectatorList.length == 0) {//check if there are four players + no spectators to append the startGame button
+      if (playerList.length > 1 && spectatorList.length == 0) {//check if there are four players + no spectators to append the startGame button
         io.to(playerList[0].id).emit("button", "Start The Game"); //emit the start game button to the first player who has joined the waiting room... this is probably broken right now.  
       }
       if (playerList.length == 4 && spectatorList.length > 0){
@@ -74,9 +76,25 @@ io.on("connection", (socket) => {
   });
 
   socket.on("startGame", (socket) => {
-    //when the start game button is pressed
+    //emit first question to all players
+    let currentQuestionArr = questionsArray;
+    let shuffle = currentQuestionArr.sort((a,b) => .5 - Math.random());
+    io.emit("questionOne", shuffle);
     console.log("start button has been pressed- start the game!"); //do the stuff later (further down the road.)
   });
+
+  socket.on("Q1Answer", (answer) => {
+    let pData = {
+      id: socket.id,
+      answer: answer,
+      votes: 0
+    }
+    answerArr.push(pData);
+    console.log(answerArr);
+    if(answerArr.length == 4) {
+      io.emit("roundOneVoting", answerArr);
+    }
+  })
 });
 
 http.listen(port, () => {

@@ -32,7 +32,7 @@ $("form#startForm").submit(function () {
 socket.on("waitingRoomLog", function (game) {
   $("div.banner").remove(); //remove previous form
   $("div#playerCards").remove(); //remove playerCards (this happens everytime someone joins to prevent duplicates)
-  $("div#withinContainer").append(`<div id="playerCards"></div>`) //append incoming user real names
+  $("div#withinContainer").append(`<div class="container" id="playerCards"></div>`) //append incoming user real names
   game.forEach(element => {
       $("div#playerCards").append(`<li>${element.charName} | ${element.charDesc} </li>`); //jquery magic
   });
@@ -58,3 +58,25 @@ socket.on("gameReady", function (game) {
 socket.on("updateSpecCount", function (game){
   $("p#specCount").html(`There are currently ${game.length} spectators.`)
 })
+
+socket.on("questionOne", function(question) {
+  $("section.waitingRoom").remove();
+  $("#hiddenRoundOne").removeClass("hidden");
+  $("#questionOneName").html(question[0]);
+});
+
+$("form#questionOneForm").submit(function() {
+  event.preventDefault();
+  if($("input#answerOne").val()){
+    answer = $("input#answerOne").val();
+    socket.emit("Q1Answer", answer);
+    $("#hiddenRoundOne").addClass("hidden");
+    $("#hiddenVoteOne").removeClass("hidden");
+  }
+});
+
+socket.on("roundOneVoting", function(answerArr){
+  answerArr.forEach(function(element){
+    $("#selectableAnswers").append(`<button type='submit' class="answerBtn" id=${element.id}>${element.answer}</button>`)
+  })
+});
