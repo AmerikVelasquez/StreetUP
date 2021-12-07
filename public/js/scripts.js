@@ -67,16 +67,32 @@ socket.on("questionOne", function(question) {
 
 $("form#questionOneForm").submit(function() {
   event.preventDefault();
+  $("#hiddenRoundOne").addClass("hidden");
+  $("#hiddenVoteOne").removeClass("hidden");
   if($("input#answerOne").val()){
     answer = $("input#answerOne").val();
     socket.emit("Q1Answer", answer);
-    $("#hiddenRoundOne").addClass("hidden");
-    $("#hiddenVoteOne").removeClass("hidden");
   }
 });
 
 socket.on("roundOneVoting", function(answerArr){
   answerArr.forEach(function(element){
-    $("#selectableAnswers").append(`<button type='submit' class="answerBtn" id=${element.id}>${element.answer}</button>`)
-  })
+    $("#selectableAnswers").append(`<button class='answerButton' id=${element.id}>${element.answer}</button>`)
+  });
+  $("button.answerButton").click(function() {
+    event.preventDefault(); 
+    let answerId = $(this).attr("id");
+    socket.emit("AnswerId", answerId);
+    $("#hiddenVoteOne").addClass("hidden");
+    $("#hiddenScoreBoard").removeClass("hidden");
+  });
 });
+
+socket.on("playerList", function(playerScores){
+  playerScores.sort((a, b) => parseFloat(b.score) - parseFloat(a.score));
+  playerScores.forEach(function(element){
+    $("ol#leaderBoard").append(`<li>Name: ${element.charName} | Score: ${element.score}</li>`)
+  })
+  
+})
+
