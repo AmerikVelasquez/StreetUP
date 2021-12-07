@@ -49,6 +49,12 @@ audio {
   display: none;
 }
 
+.rules {
+  border:1px solid navy;
+  background:darkslategray;
+  border-radius: 0.50em;
+}
+
 .waitingRoom {
   width: 100vw;
   height: auto;
@@ -165,4 +171,20 @@ audio {
   background: lightblue;
   /* backdrop-filter: blur(60px); */
   border-radius: 0.50em;
+}
+
+#scoreBoard {
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  border:1px solid white;
+  margin-top: 5em;
+  height:50vh;
+  width:50vw;
+  background:darkslategrey;
+  color:white;
+  font-size: larger;
+  font-weight: 200;
 }
