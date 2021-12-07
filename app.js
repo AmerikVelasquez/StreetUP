@@ -25,9 +25,16 @@ let charNameList = [];
 let playerList = [];
 let spectatorList = [];
 const questionsArray = ["What is the best item to bring to a deserted island?", "Who would be the best teammate in a zombie apocalypse?", "What is the worst U.S. state?", "What is the oddest superpower?", "What is the best Disney/Pixar movie?", "Things you shouldn't say to your grandma?", "What are the worst pet names?", "If you could bring back one person, who would it be?" ];
-let answerArr = []
+let answerArr = [] // an array to hold the answers from each player for the round. will be reset after each round to be used on next round
+const countArr = [];
 
 //--------------------
+
+io.on("disconnect", () => {
+  console.log(socket.id); // undefined
+  console.log("connected:")
+  console.log(socket.connected); // false
+});
 
 io.on("connection", (socket) => {
   //when a user connects
@@ -57,7 +64,7 @@ io.on("connection", (socket) => {
       console.log("number of spectators: " + spectatorList.length); //debug
 
       io.to("waitingRoom").emit("waitingRoomLog", playerList); //emit to all sockets (users/clients) in the waiting room
-      if (playerList.length > 1 && spectatorList.length == 0) {//check if there are four players + no spectators to append the startGame button
+      if (playerList.length == 4 && spectatorList.length == 0) {//check if there are four players + no spectators to append the startGame button
         io.to(playerList[0].id).emit("button", "Start The Game"); //emit the start game button to the first player who has joined the waiting room... this is probably broken right now.  
       }
       if (playerList.length == 4 && spectatorList.length > 0){
@@ -77,7 +84,7 @@ io.on("connection", (socket) => {
 
   socket.on("startGame", (socket) => {
     //emit first question to all players
-    let currentQuestionArr = questionsArray;
+    let currentQuestionArr = questionsArray; // currentQuestionArr is a copy of master list of questions. after each question that question should be spliced out to stop repeat questions
     let shuffle = currentQuestionArr.sort((a,b) => .5 - Math.random());
     io.emit("questionOne", shuffle);
     console.log("start button has been pressed- start the game!"); //do the stuff later (further down the road.)
@@ -91,10 +98,21 @@ io.on("connection", (socket) => {
     }
     answerArr.push(pData);
     console.log(answerArr);
-    if(answerArr.length == 4) {
+    if(answerArr.length == 4) { // change back to 4 
       io.emit("roundOneVoting", answerArr);
     }
-  })
+  });
+  socket.on("AnswerId", (answerId) => {
+    for(let i=0; i<playerList.length; i++){
+      if(answerId == playerList[i].id){
+        playerList[i].score += 1;
+        countArr.push(answerId);
+      }
+    };
+    if(countArr.length == 4){
+      io.emit("playerList", playerList);
+    }
+  });
 });
 
 http.listen(port, () => {
@@ -102,3 +120,5 @@ http.listen(port, () => {
   console.log(`server running at http://localhost:${port}/`);
 });
 //fin
+
+
