@@ -19,116 +19,69 @@
                 <h1 class="title">StreetUP</h1>
                 <h1>🥊&nbsp;&nbsp;&nbsp;⚔️&nbsp;&nbsp;&nbsp;💉</h1>
                 <p class="label">Your Characters Name:</p>
-                    <input class="form-control" id="charName" autocomplete="off" placeholder="zark muckerburg" style="text-align: center;" required />
-                    <br>
-                    <p class="label">Your character Description:</p>
-                    <input class="form-control" id="charDesc" autocomplete="off" placeholder="owns Face- i mean Meta" style="text-align: center;" required />
-                    <br>
-                    <button type="submit" class="btn btn-dark">Let's Fight</button>
-                    <br><br>
-                    <details class="rules">
-                        <summary>Rules:</summary>
-                        <ol>
-                            <li>Create character</li>
-                            <li>For each question submit your answer</li>
-                            <li>Votes are converted to points</li>
-                            <li>Player with the most points will be the victor</li>
-                        </ol>
-                    </details>
+                <input class="form-control" id="charName" autocomplete="off" placeholder="zark muckerburg"
+                    style="text-align: center;" required />
+                <br>
+                <p class="label">Your character Description:</p>
+                <input class="form-control" id="charDesc" autocomplete="off" placeholder="owns Face- i mean Meta"
+                    style="text-align: center;" required />
+                <br>
+                <button type="submit" class="btn btn-dark">Let's Fight</button>
+                <br><br>
+                <details class="rules">
+                    <summary>Rules:</summary>
+                    <ol>
+                        <li>Create character</li>
+                        <li>For each question submit your answer</li>
+                        <li>Votes are converted to points</li>
+                        <li>Player with the most points will be the victor</li>
+                    </ol>
+                </details>
             </form>
             <!-- <audio controls loop id="shoe"
                 src="https://download1519.mediafire.com/0f4iq8cgthng/5ca7kpuymrnt5xo/shoes.mp3"></audio> -->
         </div>
     </header>
-    
+
     <section class="hidden waitingRoom">
-        <div id="withinContainer" class="container">
-            <h1 id="waitingStatus" class="waitTitle">Waiting for other players.</h1>
+        <div id="withinContainerWaitingRoom" class="container">
+            <h1 id="waitingStatusWaitingRoom" class="waitTitle">Waiting for other players.</h1>
             <p id="specCount" class="waitTitle"></p>
             <div class="waitTitle" id="buttonSpot"></div>
         </div>
     </section>
-    <div id="hiddenRoundOne" class="hidden">
-        <div id ="roundOne" class="container" >
-            <h1 id = "questionOneName"></h1>
-            <form id="questionOneForm">
-                <label for="answerOne">Answer:</label>
-                <input class="form-control" id="answerOne" autocomplete="off" placeholder="Helen Keller" style="text-align: center;" required />
-                <button type="submit" id="questionOneSubmit">Submit Answer!</button>
-            </form>
-        </div>
-    </div>
-    <div id="hiddenVoteOne" class="hidden">
-        <div id="votingOne" class="container">
-            <h1>Vote on which answer is best!</h1>
-            <h6>One click, One vote!!</h6>
-            <div id="selectableAnswers"></div>
-        </div>
-    </div>
 
-    <div id ="hiddenScoreBoard" class ="hidden">
-        <div id="scoreBoard" class ="container">
-            <h3>Leaderboard</h3>
-            <hr/>
-            <ol id="leaderBoard">
-            </ol>
+    <section class="hidden lateJoin">
+        <div id="withinContainerLateJoin" class="container">
+            <h1 id="waitingStatusLateJoin" class="waitTitle">Looks like you joined a bit late.</h1>
+            <p class="waitTitle">Hang tight while this round is in session.</p>
         </div>
-    </div>
-    <div id="hiddenRoundTwo" class="hidden">
-        <div id ="roundTwo" class="container" >
-            <h1 id = "questionTwoName"></h1>
-            <form id="questionTwoForm">
-                <label for="answerTwo">Answer:</label>
-                <input class="form-control" id="answerTwo" autocomplete="off" placeholder="Helen Keller" style="text-align: center;" required />
-                <button type="submit" id="questionTwoSubmit">Submit Answer!</button>
-            </form>
-        </div>
-    </div>
-    <div id="hiddenVoteTwo" class="hidden">
-        <div id="votingTwo" class="container">
-            <h1>Vote on which answer is best!</h1>
-            <h6>One click, One vote!!</h6>
-            <div id="selectableAnswers2"></div>
-        </div>
-    </div> 
+    </section>
 
-    <div id ="hiddenScoreBoardTwo" class ="hidden">
-        <div id="scoreBoardTwo" class ="container">
-            <h3>Leaderboard</h3>
-            <hr/>
-            <ol id="leaderBoardTwo">
-            </ol>
+    <section class="hidden roundQuestion">
+        <div id="withinContainerRoundQuestion" class="container">
+            <h1 id="question" class="waitTitle">Lorem</h1>
+            <div id="responsePlaceholder"></div>
+            <p class="waitTitle">Players will respond to the question above.</p>
+            <div class="waitTitle" id="buttonSpot"></div>
         </div>
-    </div>
-    
-    <div id="hiddenFinalRound" class="hidden">
-        <div id ="finalRound" class="container" >
-            <h1 id = "finalQuestionName"></h1>
-            <form id="finalQuestionForm">
-                <label for="finalAnswer">Answer:</label>
-                <input class="form-control" id="finalAnswer" autocomplete="off" placeholder="Helen Keller" style="text-align: center;" required />
-                <button type="submit" id="finalQuestionSubmit">Submit Answer!</button>
-            </form>
-        </div>
-    </div>
-    <div id="hiddenFinalVote" class="hidden">
-        <div id="finalVoting" class="container">
-            <h1>Vote on which answer is best!</h1>
-            <h6>One click, One vote!!</h6>
-            <div id="finalSelectableAnswers"></div>
-        </div>
-    </div> 
-    <div id ="hiddenFinalScoreBoard" class ="hidden">
-        <div id="finalScoreBoard" class ="container">
-            <h3>Leaderboard</h3>
-            <hr/>
-            <ol id="finalLeaderBoard">
-            </ol>
-        </div>
-    </div>
+    </section>
 
-    
+    <section class="hidden roundVote">
+        <div id="withinContainerRoundVote" class="container">
+            <h1 id="waitingStatusRoundVote" class="waitTitle">Choose your favorite response!</h1>
+            <div id="voteCards"></div>
+            <p class="waitTitle">Spectators and Players can vote.</p>
+        </div>
+    </section>
 
+    <section class="hidden leaderboard">
+        <div id="withinContainer" class="container">
+            <h1 id="waitingStatus" class="waitTitle">lorem</h1>
+            <p class="waitTitle">ipsum</p>
+            <div class="waitTitle" id="buttonSpot"></div>
+        </div>
+    </section>
 </body>
 
 <script src="/js/scripts.js" type="text/javascript"></script>

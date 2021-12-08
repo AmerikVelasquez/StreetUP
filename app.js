@@ -1,4 +1,5 @@
 //start boilerplate code
+const { response } = require("express");
 var express = require("express");
 const app = express();
 const http = require("http").Server(app);
@@ -6,12 +7,14 @@ const io = require("socket.io")(http);
 const port = process.env.PORT || 3000;
 var path = require("path");
 
-
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/views/index.html");
   app.use(express.static(path.join(__dirname, "public")));
   app.use("/jquery", express.static(__dirname + "/node_modules/jquery/dist/"));
-  app.use("/bootstrap", express.static(__dirname + "/node_modules/bootstrap/dist/"));
+  app.use(
+    "/bootstrap",
+    express.static(__dirname + "/node_modules/bootstrap/dist/")
+  );
 });
 
 app.get("/scripts.js", function (req, res) {
@@ -21,21 +24,22 @@ app.get("/scripts.js", function (req, res) {
 //end boilerplate code
 
 //we should probably figure out a way to make these variables not global lmfao
-let charNameList = [];
+let gameStarted = false;
 let playerList = [];
 let spectatorList = [];
-const questionsArray = ["What is the best item to bring to a deserted island?", "Who would be the best teammate in a zombie apocalypse?", "What is the worst U.S. state?", "What is the oddest superpower?", "What is the best Disney/Pixar movie?", "Things you shouldn't say to your grandma?", "What are the worst pet names?", "If you could bring back one person, who would it be?" ];
-let answerArr = [] // an array to hold the answers from each player for the round. will be reset after each round to be used on next round
-let countArr = [];
- // currentQuestionArr is a copy of master list of questions. after each question that question should be spliced out to stop repeat questions
-
+let questionsArray = [
+  "What is the best item to bring to a deserted island?",
+  "Who would be the best teammate in a zombie apocalypse?",
+  "What is the worst U.S. state?",
+  "What is the oddest superpower?",
+  "What is the best Disney/Pixar movie?",
+  "What is something you shouldn't say to your grandma?",
+  "What's a terrible pet name?",
+  "If you could bring one person back from the dead, who would it be?",
+];
+let questionsAsked = 0;
+let listOfResponses = [];
 //--------------------
-
-io.on("disconnect", () => {
-  console.log(socket.id); // undefined
-  console.log("connected:")
-  console.log(socket.connected); // false
-});
 
 io.on("connection", (socket) => {
   //when a user connects
@@ -44,19 +48,32 @@ io.on("connection", (socket) => {
   socket.on("enrollment", (game) => {
     if (game.charName) {
       //check if that the user actually submitted something.
-      socket.join("waitingRoom"); //throw the user ("socket." will grab the current user) into the waiting room. This also creates the room "waitingRoom"
-      if (playerList.length < 4) { //if the playerList of the waiting room is less than 4 designate a user as a "player"
-        playerList.push({
-          id: socket.id,
-          charName: game.charName,
-          charDesc: game.charDesc,
-          charType: "player",
-          score: 0,
-        }); //fin!
-      } else { //if not- designate them as a spectator.
+      if (gameStarted == true) {
+        console.log("someone joined late!");
+        console.log("game state: " + gameStarted);
+        socket.charType = "player";
         spectatorList.push({ id: socket.id, charType: "spectator" });
+        socket.join("theGame");
+        console.log(io.sockets.adapter.rooms.get("theGame"));
+        io.to(socket.id).emit("lateJoin");
+      } else {
+        socket.join("waitingRoom"); //throw the user ("socket." will grab the current user) into the waiting room. This also creates the room "waitingRoom"
+        if (playerList.length < 4) {
+          //if the playerList of the waiting room is less than 4 designate a user as a "player"
+          socket.charType = "player";
+          playerList.push({
+            id: socket.id,
+            charName: game.charName,
+            charDesc: game.charDesc,
+            charType: "player",
+            score: 0,
+          }); //fin!
+        } else {
+          //if not- designate them as a spectator.
+          socket.charType = "player";
+          spectatorList.push({ id: socket.id, charType: "spectator" });
+        }
       }
-      
 
       console.log(playerList); //debug
       console.log("number of fighters: " + playerList.length); //debug
@@ -65,10 +82,11 @@ io.on("connection", (socket) => {
       console.log("number of spectators: " + spectatorList.length); //debug
 
       io.to("waitingRoom").emit("waitingRoomLog", playerList); //emit to all sockets (users/clients) in the waiting room
-      if (playerList.length == 4 && spectatorList.length == 0) {//check if there are four players + no spectators to append the startGame button
-        io.to(playerList[0].id).emit("button", "Start The Game"); //emit the start game button to the first player who has joined the waiting room... this is probably broken right now.  
+      if (playerList.length == 4 && spectatorList.length == 0) {
+        //check if there are four players + no spectators to append the startGame button
+        io.to(playerList[0].id).emit("button", "Start The Game"); //emit the start game button to the first player who has joined the waiting room... this is probably broken right now.
       }
-      if (playerList.length == 4 && spectatorList.length > 0){
+      if (playerList.length == 4 && spectatorList.length > 0) {
         io.to("waitingRoom").emit("gameReady"); //if there is the required players emit the "ready" heading to all clients
       }
       io.to("waitingRoom").emit("updateSpecCount", spectatorList); //update the spectator count
@@ -83,113 +101,46 @@ io.on("connection", (socket) => {
     console.log("current player count: " + playerList.length); //debug (i put this here specifially because we do alot of array manipulations and putting this console log before would probably cause brain fucks.)
   });
 
-  socket.on("startGame", (socket) => {
-    //emit first question to all players
-    questionsArray.sort((a,b) => .5 - Math.random());
-    io.emit("questionOne", questionsArray);
+  //function to serve newQuestion dynamically
+function serveQuestion() {
+  //select question to serve to user
+  questionsArray.sort((a, b) => 0.5 - Math.random());
+  playerList.forEach(element => {
+    io.to(element.id).emit("allowResponse");
   });
+  io.to("theGame").emit("askQuestion", questionsArray[0]); //emit to all sockets (users/clients) in the game room the question
+  questionsAsked++;
+  console.log("questions asked: " + questionsAsked);
+}
 
-  socket.on("Q1Answer", (answer) => {
-    let pData = {
-      id: socket.id,
-      answer: answer,
-      votes: 0
+  socket.on("startGame", () => {
+    //if the game hasn't started yet
+    if (gameStarted == false) {
+      //have all players in the waiting room join theGame room
+      io.in("waitingRoom").socketsJoin("theGame");
+      //have all players leave the waiting room
+      io.in("waitingRoom").socketsLeave("waitingRoom");
+      console.log("sockets in theGame:");
+      console.log(io.sockets.adapter.rooms.get("theGame"));
+      gameStarted = true;
+      console.log("game state:");
+      console.log(gameStarted);
     }
-    answerArr.push(pData);
-    console.log(answerArr);
-    if(answerArr.length == 4) { // change back to 4 
-      io.emit("roundOneVoting", answerArr);
+    serveQuestion();
+  });
+
+  socket.on("poll", (data) => {
+    console.log(data);
+    listOfResponses.push({id: socket.id, response: data.response});
+    if(listOfResponses.length == 4){
+      io.to("theGame").emit("votingForm", listOfResponses); //emit to all sockets (users/clients) in the waiting room
+    listOfResponses = 0;
     }
-  });
-  socket.on("AnswerId", (answerId) => {
-    for(let i=0; i<playerList.length; i++){
-      if(answerId == playerList[i].id){
-        playerList[i].score += 1;
-        countArr.push(answerId);
-      }
-    };
-    if(countArr.length == 4){
-      io.emit("playerList", playerList);
-      answerArr = [];
-      countArr = [];
-    }
-  });
-
-  //Round two
-  socket.on("nextRoundButton", () => {
-  io.to(playerList[0].id).emit("nextButton");
-  });
-
-  socket.on("secondRound", () => {
-    io.emit("questionTwo", questionsArray);
-  });
-
-  socket.on("Q2Answer", (answer) =>{
-  let p2Data = {
-    id : socket.id,
-    answer: answer 
-  }
-  answerArr.push(p2Data)
-    if(answerArr.length == 4) {
-      io.emit("roundTwoVoting", answerArr )
-    }
-  });
-
-
-  socket.on("AnswerId2", (answerId2) => {
-    for(let i=0; i<playerList.length; i++){
-      if(answerId2 == playerList[i].id){
-        playerList[i].score += 1;
-        countArr.push(answerId2);
-      } 
-    };
-    if(countArr.length == 4){
-      io.emit("playerList2", playerList);
-      answerArr = [];
-      countArr = [];
-    }
-  });
-
-  socket.on("finalRoundButton", () => {
-    io.to(playerList[0].id).emit("finalButton");
-    });
-  
-    socket.on("finalRound", () => {
-      io.emit("finalQuestion", questionsArray);
-    });
-  
-    socket.on("Q3Answer", (answer) =>{
-    let p3Data = {
-      id : socket.id,
-      answer: answer 
-    }
-    answerArr.push(p3Data)
-      if(answerArr.length == 4) {
-        io.emit("finalRoundVoting", answerArr )
-      }
-    });
-  
-  
-    socket.on("AnswerId3", (answerId3) => {
-      for(let i=0; i<playerList.length; i++){
-        if(answerId3 == playerList[i].id){
-          playerList[i].score += 1;
-          countArr.push(answerId3);
-        } 
-      };
-      if(countArr.length == 4){
-        io.emit("playerList3", playerList);
-        answerArr = [];
-        countArr = [];
-      }
     });
 });
-
 
 http.listen(port, () => {
   //i lied. more boiler plate code. 🖕
   console.log(`server running at http://localhost:${port}/`);
 });
 //fin
-
-
