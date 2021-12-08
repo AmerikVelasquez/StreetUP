@@ -112,7 +112,7 @@ socket.on("allowResponse", function (){
 });
 
 
-//send polling elements to clients
+//send polling elements to clients NEW VOTING SETUP
 socket.on("votingForm", function (entries){
   //remove prior elements
   $("div.banner").remove();
@@ -130,10 +130,24 @@ entries.forEach(element => {
     `<button class="responseButton" id="${element.id}">${element.response}`
   );
 });
+
 $("button.responseButton").click(function () {
   event.preventDefault();
   socket.emit("vote", $(this).attr("id"));
   $("div#voteCards").empty();
+  $("h1#waitingStatusRoundVote").html("Please wait while others vote.")
 });
 
+socket.on("leaderboard", function (listOfPlayers){
+   //remove prior elements
+   $("div.banner").remove();
+   $("section.waitingRoom").remove();
+   $("div#playerCards").remove();
+   $("button#startGame").remove();
+   $("section.lateJoin").remove();
+   $("section.roundVote").hide();
+   $("section.roundQuestion").hide();
+   //show
+   $("section.leaderboard").show();
+});
 });

@@ -39,6 +39,7 @@ let questionsArray = [
 ];
 let questionsAsked = 0;
 let listOfResponses = [];
+let playersVoted = 0;
 //--------------------
 
 io.on("connection", (socket) => {
@@ -102,16 +103,16 @@ io.on("connection", (socket) => {
   });
 
   //function to serve newQuestion dynamically
-function serveQuestion() {
-  //select question to serve to user
-  questionsArray.sort((a, b) => 0.5 - Math.random());
-  playerList.forEach(element => {
-    io.to(element.id).emit("allowResponse");
-  });
-  io.to("theGame").emit("askQuestion", questionsArray[0]); //emit to all sockets (users/clients) in the game room the question
-  questionsAsked++;
-  console.log("questions asked: " + questionsAsked);
-}
+  function serveQuestion() {
+    //select question to serve to user
+    questionsArray.sort((a, b) => 0.5 - Math.random());
+    playerList.forEach((element) => {
+      io.to(element.id).emit("allowResponse");
+    });
+    io.to("theGame").emit("askQuestion", questionsArray[0]); //emit to all sockets (users/clients) in the game room the question
+    questionsAsked++;
+    console.log("questions asked: " + questionsAsked);
+  }
 
   socket.on("startGame", () => {
     //if the game hasn't started yet
@@ -131,12 +132,31 @@ function serveQuestion() {
 
   socket.on("poll", (data) => {
     console.log(data);
-    listOfResponses.push({id: socket.id, response: data.response});
-    if(listOfResponses.length == 4){
+    listOfResponses.push({ id: socket.id, response: data.response });
+    if (listOfResponses.length == 4) {
       io.to("theGame").emit("votingForm", listOfResponses); //emit to all sockets (users/clients) in the waiting room
-    listOfResponses = 0;
+      listOfResponses = 0;
     }
-    });
+  });
+
+  socket.on("vote", (id) => {
+    for (let i = 0; i < playerList.length; i++) {
+      if (id == playerList[i].id) {
+        playerList[i].score += 1;
+        console.log(playerList[i].charDesc + " has " + playerList[i].score + " points:")
+      }
+
+      if (socket.id == playerList[i].id){
+      playersVoted += 1;
+      }
+
+      if (playersVoted == 4){
+      io.to("theGame").emit("leaderboard", playerList); //emit to all sockets (users/clients) in the game
+      }
+    }
+
+
+  });
 });
 
 http.listen(port, () => {
