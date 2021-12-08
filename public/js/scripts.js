@@ -52,12 +52,12 @@ socket.on("button", function (game) {
 //when the game is ready (has 4 players) emit to all users within the waiting room
 socket.on("gameReady", function (game) {
   $("h1#waitingStatus").html("Ready! Waiting to start the fight.")
-})
+});
 
 //change spectator count on DOM on emit from server
 socket.on("updateSpecCount", function (game){
   $("p#specCount").html(`There are currently ${game.length} spectators.`)
-})
+});
 
 socket.on("questionOne", function(question) {
   $("section.waitingRoom").remove();
@@ -91,8 +91,95 @@ socket.on("roundOneVoting", function(answerArr){
 socket.on("playerList", function(playerScores){
   playerScores.sort((a, b) => parseFloat(b.score) - parseFloat(a.score));
   playerScores.forEach(function(element){
-    $("ol#leaderBoard").append(`<li>Name: ${element.charName} | Score: ${element.score}</li>`)
-  })
-  
-})
+    $("ol#leaderBoard").append(`<li class="score">Name: ${element.charName} | Score: ${element.score}</li>`)
+  });
+  socket.emit("nextRoundButton");
+});
 
+socket.on("nextButton", function() {
+  $("#hiddenScoreBoard").append(`<button id="next">Next Round</button>`);
+  $("button#next").click(function() {
+    socket.emit("secondRound");
+  });
+});
+
+socket.on("questionTwo", function(question){
+  $("#hiddenScoreBoard").addClass("hidden");
+  $("#hiddenRoundTwo").removeClass("hidden");
+  $("#questionTwoName").html(question[1])
+});
+
+$("form#questionTwoForm").submit(function() {
+  event.preventDefault();
+  $("#hiddenRoundTwo").addClass("hidden");
+  $("#hiddenVoteTwo").removeClass("hidden");
+  if($("input#answerTwo").val()){
+    answer = $("input#answerTwo").val();
+    socket.emit("Q2Answer", answer);
+  }
+});
+
+socket.on("roundTwoVoting", function(answerArr){
+  answerArr.forEach(function(element){
+    $("#selectableAnswers2").append(`<button class='answerButton2' id=${element.id}>${element.answer}</button>`)
+  });
+  $("button.answerButton2").click(function() {
+    event.preventDefault(); 
+    let answerId2 = $(this).attr("id");
+    socket.emit("AnswerId2", answerId2);
+    $("#hiddenVoteTwo").addClass("hidden");
+    $("#hiddenScoreBoardTwo").removeClass("hidden");
+  });
+});
+
+socket.on("playerList2", function(playerScores){
+  playerScores.sort((a, b) => parseFloat(b.score) - parseFloat(a.score));
+  playerScores.forEach(function(element){
+    $("ol#leaderBoardTwo").append(`<li class="score">Name: ${element.charName} | Score: ${element.score}</li>`)
+  });
+  socket.emit("finalRoundButton");
+});
+
+socket.on("finalButton", function() {
+  $("#hiddenScoreBoardTwo").append(`<button id="next">Next Round</button>`);
+  $("button#next").click(function() {
+    socket.emit("finalRound");
+  });
+});
+
+socket.on("finalQuestion", function(question){
+  $("#hiddenScoreBoardTwo").addClass("hidden");
+  $("#hiddenFinalRound").removeClass("hidden");
+  $("#finalQuestionName").html(question[2])
+});
+
+$("form#finalQuestionForm").submit(function() {
+  event.preventDefault();
+  $("#hiddenFinalRound").addClass("hidden");
+  $("#hiddenFinalVote").removeClass("hidden");
+  if($("input#finalAnswer").val()){
+    answer = $("input#finalAnswer").val();
+    socket.emit("Q3Answer", answer);
+  }
+});
+
+socket.on("finalRoundVoting", function(answerArr){
+  answerArr.forEach(function(element){
+    $("#finalSelectableAnswers").append(`<button class='answerButton3' id=${element.id}>${element.answer}</button>`)
+  });
+  $("button.answerButton3").click(function() {
+    event.preventDefault(); 
+    let answerId3 = $(this).attr("id");
+    socket.emit("AnswerId3", answerId3);
+    $("#hiddenFinalVote").addClass("hidden");
+    $("#hiddenFinalScoreBoard").removeClass("hidden");
+  });
+});
+
+socket.on("playerList3", function(playerScores){
+  playerScores.sort((a, b) => parseFloat(b.score) - parseFloat(a.score));
+  playerScores.forEach(function(element){
+    $("ol#finalLeaderBoard").append(`<li class="score">Name: ${element.charName} | Score: ${element.score}</li>`)
+  });
+  socket.emit("finalRoundButton");
+});

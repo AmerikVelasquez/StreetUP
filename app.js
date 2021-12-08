@@ -26,7 +26,8 @@ let playerList = [];
 let spectatorList = [];
 const questionsArray = ["What is the best item to bring to a deserted island?", "Who would be the best teammate in a zombie apocalypse?", "What is the worst U.S. state?", "What is the oddest superpower?", "What is the best Disney/Pixar movie?", "Things you shouldn't say to your grandma?", "What are the worst pet names?", "If you could bring back one person, who would it be?" ];
 let answerArr = [] // an array to hold the answers from each player for the round. will be reset after each round to be used on next round
-const countArr = [];
+let countArr = [];
+ // currentQuestionArr is a copy of master list of questions. after each question that question should be spliced out to stop repeat questions
 
 //--------------------
 
@@ -84,10 +85,8 @@ io.on("connection", (socket) => {
 
   socket.on("startGame", (socket) => {
     //emit first question to all players
-    let currentQuestionArr = questionsArray; // currentQuestionArr is a copy of master list of questions. after each question that question should be spliced out to stop repeat questions
-    let shuffle = currentQuestionArr.sort((a,b) => .5 - Math.random());
-    io.emit("questionOne", shuffle);
-    console.log("start button has been pressed- start the game!"); //do the stuff later (further down the road.)
+    questionsArray.sort((a,b) => .5 - Math.random());
+    io.emit("questionOne", questionsArray);
   });
 
   socket.on("Q1Answer", (answer) => {
@@ -111,9 +110,81 @@ io.on("connection", (socket) => {
     };
     if(countArr.length == 4){
       io.emit("playerList", playerList);
+      answerArr = [];
+      countArr = [];
     }
   });
+
+  //Round two
+  socket.on("nextRoundButton", () => {
+  io.to(playerList[0].id).emit("nextButton");
+  });
+
+  socket.on("secondRound", () => {
+    io.emit("questionTwo", questionsArray);
+  });
+
+  socket.on("Q2Answer", (answer) =>{
+  let p2Data = {
+    id : socket.id,
+    answer: answer 
+  }
+  answerArr.push(p2Data)
+    if(answerArr.length == 4) {
+      io.emit("roundTwoVoting", answerArr )
+    }
+  });
+
+
+  socket.on("AnswerId2", (answerId2) => {
+    for(let i=0; i<playerList.length; i++){
+      if(answerId2 == playerList[i].id){
+        playerList[i].score += 1;
+        countArr.push(answerId2);
+      } 
+    };
+    if(countArr.length == 4){
+      io.emit("playerList2", playerList);
+      answerArr = [];
+      countArr = [];
+    }
+  });
+
+  socket.on("finalRoundButton", () => {
+    io.to(playerList[0].id).emit("finalButton");
+    });
+  
+    socket.on("finalRound", () => {
+      io.emit("finalQuestion", questionsArray);
+    });
+  
+    socket.on("Q3Answer", (answer) =>{
+    let p3Data = {
+      id : socket.id,
+      answer: answer 
+    }
+    answerArr.push(p3Data)
+      if(answerArr.length == 4) {
+        io.emit("finalRoundVoting", answerArr )
+      }
+    });
+  
+  
+    socket.on("AnswerId3", (answerId3) => {
+      for(let i=0; i<playerList.length; i++){
+        if(answerId3 == playerList[i].id){
+          playerList[i].score += 1;
+          countArr.push(answerId3);
+        } 
+      };
+      if(countArr.length == 4){
+        io.emit("playerList3", playerList);
+        answerArr = [];
+        countArr = [];
+      }
+    });
 });
+
 
 http.listen(port, () => {
   //i lied. more boiler plate code. 🖕
