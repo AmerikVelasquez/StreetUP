@@ -136,7 +136,7 @@ io.on("connection", (socket) => {
     listOfResponses.push({ id: socket.id, response: data.response });
     if (listOfResponses.length == 4) {
       io.to("theGame").emit("votingForm", listOfResponses); //emit to all sockets (users/clients) in the waiting room
-      listOfResponses = 0;
+      listOfResponses = [];
     }
   });
 
@@ -154,16 +154,15 @@ io.on("connection", (socket) => {
       }
 
       if (playersVoted == 4) {
-        playerList.sort((a, b) => a.score + b.score); //sort players score from least greatest
-        io.to("theGame").emit("leaderboard", playerList); //emit to all sockets (users/clients) in the game
-        if(questionsAsked == 4){
-          console.log("go to the end of the game");
+        playerList.sort((a, b) => a.score + b.score); //sort players score from greatest to least
+        if (questionsAsked == 4) {
+          io.to("theGame").emit("leaderboard", playerList); //emit to all sockets (users/clients) in the game
         } else {
-        setTimeout(() => {
-          console.log("starting next round");
-          serveQuestion();
-        }, 10000); //set timer to go to next round
-      }
+          setTimeout(() => {
+            console.log("starting next round");
+            serveQuestion();
+          }, 10000); //set timer to go to next round
+        }
       }
     }
   });

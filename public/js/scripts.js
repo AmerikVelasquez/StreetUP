@@ -114,9 +114,11 @@ socket.on("allowResponse", function () {
   $("div#responsePlaceholder").html(
     `<input type="text" id="response" class="form-control" placeholder="Aa" autocomplete="off" required/>`
   );
+  $("div#responsePlaceholder").show();
   $("div#buttonSpot").html(
     `<button id="submitResponse" class="btn btn-dark">Submit`
   );
+  $("div#buttonSpot").show();
 });
 
 //send polling elements to clients NEW VOTING SETUP
