@@ -110,11 +110,12 @@ io.on("connection", (socket) => {
       io.to(element.id).emit("allowResponse");
     });
     io.to("theGame").emit("askQuestion", questionsArray[0]); //emit to all sockets (users/clients) in the game room the question
-    questionsAsked++;
     console.log("questions asked: " + questionsAsked);
   }
 
   socket.on("startGame", () => {
+    questionsArray.shift();
+    questionsAsked++;
     //if the game hasn't started yet
     if (gameStarted == false) {
       //have all players in the waiting room join theGame room
@@ -143,19 +144,28 @@ io.on("connection", (socket) => {
     for (let i = 0; i < playerList.length; i++) {
       if (id == playerList[i].id) {
         playerList[i].score += 1;
-        console.log(playerList[i].charDesc + " has " + playerList[i].score + " points:")
+        console.log(
+          playerList[i].charDesc + " has " + playerList[i].score + " points:"
+        );
       }
 
-      if (socket.id == playerList[i].id){
-      playersVoted += 1;
+      if (socket.id == playerList[i].id) {
+        playersVoted += 1;
       }
 
-      if (playersVoted == 4){
-      io.to("theGame").emit("leaderboard", playerList); //emit to all sockets (users/clients) in the game
+      if (playersVoted == 4) {
+        playerList.sort((a, b) => a.score + b.score); //sort players score from least greatest
+        io.to("theGame").emit("leaderboard", playerList); //emit to all sockets (users/clients) in the game
+        if(questionsAsked == 4){
+          console.log("go to the end of the game");
+        } else {
+        setTimeout(() => {
+          console.log("starting next round");
+          serveQuestion();
+        }, 10000); //set timer to go to next round
+      }
       }
     }
-
-
   });
 });
 

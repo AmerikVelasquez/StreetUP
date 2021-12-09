@@ -87,6 +87,8 @@ socket.on("askQuestion", function (question) {
   //show
   $("section.roundQuestion").show();
   $("h1#question").html(question);
+  $("h1#waitingStatusRoundVote").html(question);
+
 
   //get question reponse and emit to the server
   $("button#submitResponse").click(function () {
@@ -94,26 +96,31 @@ socket.on("askQuestion", function (question) {
     console.log("response button clicked");
     if ($("input#response").val()) {
       let data = {
-        response: response.value
+        response: response.value,
       };
+      $("div#responsePlaceholder").hide();
+      $("div#buttonSpot").hide();
+      $("h1#question").html(
+        "Hang tight while the other players are responding."
+      );
       socket.emit("poll", data);
+    } else {
     }
-    $("div#responsePlaceholder").hide();
-    $("div#buttonSpot").hide();
-  $("h1#question").html("Hang tight while the other players are responding.");
-
   });
 });
 
 //add submit and text input for players only
-socket.on("allowResponse", function (){
-  $("div#responsePlaceholder").html(`<input type="text" id="response" class="form-control" placeholder="Aa" required autocomplete="off"/>`);
-  $("div#buttonSpot").html(`<button id="submitResponse" class="btn btn-dark">Submit`)
+socket.on("allowResponse", function () {
+  $("div#responsePlaceholder").html(
+    `<input type="text" id="response" class="form-control" placeholder="Aa" autocomplete="off" required/>`
+  );
+  $("div#buttonSpot").html(
+    `<button id="submitResponse" class="btn btn-dark">Submit`
+  );
 });
 
-
 //send polling elements to clients NEW VOTING SETUP
-socket.on("votingForm", function (entries){
+socket.on("votingForm", function (entries) {
   //remove prior elements
   $("div.banner").remove();
   $("section.waitingRoom").remove();
@@ -125,29 +132,34 @@ socket.on("votingForm", function (entries){
   //show
   $("section.roundVote").show();
 
-entries.forEach(element => {
-  $("div#voteCards").append(
-    `<button class="responseButton" id="${element.id}">${element.response}`
-  );
-});
+  entries.forEach((element) => {
+    $("div#voteCards").append(
+      `<button class="responseButton" id="${element.id}">${element.response}`
+    );
+  });
 
-$("button.responseButton").click(function () {
-  event.preventDefault();
-  socket.emit("vote", $(this).attr("id"));
-  $("div#voteCards").empty();
-  $("h1#waitingStatusRoundVote").html("Please wait while others vote.")
-});
+  $("button.responseButton").click(function () {
+    event.preventDefault();
+    socket.emit("vote", $(this).attr("id"));
+    $("div#voteCards").empty();
+    $("h1#waitingStatusRoundVote").html("Please wait while others vote.");
+  });
 
-socket.on("leaderboard", function (listOfPlayers){
-   //remove prior elements
-   $("div.banner").remove();
-   $("section.waitingRoom").remove();
-   $("div#playerCards").remove();
-   $("button#startGame").remove();
-   $("section.lateJoin").remove();
-   $("section.roundVote").hide();
-   $("section.roundQuestion").hide();
-   //show
-   $("section.leaderboard").show();
-});
+  socket.on("leaderboard", function (listOfPlayers) {
+    //remove prior elements
+    $("div.banner").remove();
+    $("section.waitingRoom").remove();
+    $("div#playerCards").remove();
+    $("button#startGame").remove();
+    $("section.lateJoin").remove();
+    $("section.roundVote").hide();
+    $("section.roundQuestion").hide();
+    //show
+    $("section.leaderboard").show();
+    listOfPlayers.forEach((element) => {
+      $("div#leaderboardPlaceholder").append(
+        `<li class="waitTitle">${element.charName} | ${element.score}</li>`
+      );
+    });
+  });
 });
