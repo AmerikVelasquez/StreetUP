@@ -2,17 +2,17 @@ body {
   margin: 0;
   padding: 0;
   border: 0;
-  background: linear-gradient(
+  /* background: linear-gradient(
     90deg,
     rgba(248, 72, 94, 1) 0%,
     rgba(81, 45, 109, 1) 76%
-  );
+  ); */
 }
 
 .banner {
   display: flex;
-  background-image: url("../img/pexels-maxime-francis-2246476.jpg");
-  background-size: 100%;
+  background-image: url("../img/shutterstock_1061954495.jpg");
+  background-size: 80%;
   flex-direction: column;
   justify-content: center;
   text-align: center;
@@ -56,6 +56,8 @@ audio {
 }
 
 .waitingRoom {
+  background-image: url("../img/waitingRoom.jpg");
+  background-size: 80%;
   width: 100vw;
   height: auto;
   min-height: 100vh;
@@ -101,65 +103,96 @@ audio {
 }
 
 
-.rules li{
+.rules li {
   text-align: start;
 }
 
 .title,
-.rules{
+.rules {
   color: white;
 }
 
-.label{
+.label  {
   color: white;
   font-weight: bold;
 }
 
-#roundOne {
+#roundOne, 
+#roundTwo, 
+#finalRound {
   display:flex;
   flex-direction: column;
   width:100vw;
   height:100vh;
-  
 }
 
-#questionOneForm {
+#hiddenRoundOne, 
+#hiddenRoundTwo,
+#hiddenFinalRound {
+  background-image: url("../img/roundBack.jpg");
+  background-size: 100%;
+  color:rgb(32, 53, 53);
+}
+
+#questionOneForm, 
+#questionTwoForm, 
+#finalQuestionForm {
   display:flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 
-#questionOneSubmit {
+#questionOneSubmit, 
+#questionTwoSubmit, 
+#finalQuestionSubmit {
   margin-top:2em;
   align-items: center;
   width:50%;
+  border-radius: 0.50em;
+  background: rgb(124, 68, 124);
+  color:white;
 }
 
-#votingOne {
+#hiddenVoteOne,
+#hiddenVoteTwo,
+#hiddenFinalVote {
+  background-image: url("../img/votingBG.jpg");
+  background-size: 100%;
+}
+
+#votingOne, 
+#votingTwo, 
+#finalVoting {
   width:100vw;
   height:100vh;
   display:flex;
   flex-direction: column;
   align-items: center;
+  color:white;
+  font-family: 'Josefin Sans', sans-serif;
 }
 
-#selectableAnswers {
+#selectableAnswers, 
+#selectableAnswers2, 
+#finalSelectableAnswers {
   display: flex;
   flex-direction: column;
   justify-content: center;
   text-align: center;
   max-width:80vw;
-  
 }
 
-#selectableAnswers h1 {
-  margin-bottom: 0.5em;
+#selectableAnswers button, 
+#selectableAnswers2 button {
+  margin-bottom:0;
 }
 
-#selectableAnswers button {
+#selectableAnswers button, 
+#selectableAnswers2 button, 
+#finalSelectableAnswers button {
   text-align: center;
-  border: 2px solid white;
+  border: 2px solid rgb(219, 62, 177);
   padding: 0.5em;
   margin-left: 1em;
   margin-top: 1em;
@@ -167,13 +200,24 @@ audio {
   max-width: 750px;
   height:14vh;
   float: left;
-  color: white;
-  background: lightblue;
-  /* backdrop-filter: blur(60px); */
+  color: rgb(219, 62, 177);
+  background: linear-gradient(to right,rgb(219, 62, 177), rgb(65, 182, 230) ); 
   border-radius: 0.50em;
 }
 
-#scoreBoard {
+#hiddenScoreBoard,
+#hiddenScoreBoardTwo,
+#hiddenFinalScoreBoard {
+  background-image: url("../img/votingBackground.jpg");
+  background-size: 100%;
+  height: 100vh;
+  width:100vw;
+  margin-top: 0;
+}
+
+#scoreBoard, 
+#scoreBoardTwo,
+#finalScoreBoard {
   display:flex;
   flex-direction: column;
   justify-content: center;
@@ -187,4 +231,14 @@ audio {
   color:white;
   font-size: larger;
   font-weight: 200;
+}
+
+#gameWinner {
+  font-family: 'Courier New', Courier, monospace;
+  font-weight:400;
+  margin-top:1.5em;
+}
+
+.noWhiteSpace {
+  margin-bottom: 0;
 }

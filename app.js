@@ -24,18 +24,12 @@ app.get("/scripts.js", function (req, res) {
 let charNameList = [];
 let playerList = [];
 let spectatorList = [];
-const questionsArray = ["What is the best item to bring to a deserted island?", "Who would be the best teammate in a zombie apocalypse?", "What is the worst U.S. state?", "What is the oddest superpower?", "What is the best Disney/Pixar movie?", "Things you shouldn't say to your grandma?", "What are the worst pet names?", "If you could bring back one person, who would it be?" ];
+const questionsArray = ["Choose your champion to win in a fist fight", "What is the car to drive to bring the least amount of attention", "What is the best street nickname?", "Pick the most intimidating bodyguard", "Most creative graffiti art?", "What is batman coming after you for?", "Amerik got kidnapped how do you save him?"];
 let answerArr = [] // an array to hold the answers from each player for the round. will be reset after each round to be used on next round
 let countArr = [];
  // currentQuestionArr is a copy of master list of questions. after each question that question should be spliced out to stop repeat questions
 
 //--------------------
-
-io.on("disconnect", () => {
-  console.log(socket.id); // undefined
-  console.log("connected:")
-  console.log(socket.connected); // false
-});
 
 io.on("connection", (socket) => {
   //when a user connects
@@ -57,13 +51,6 @@ io.on("connection", (socket) => {
         spectatorList.push({ id: socket.id, charType: "spectator" });
       }
       
-
-      console.log(playerList); //debug
-      console.log("number of fighters: " + playerList.length); //debug
-
-      console.log(spectatorList); //debug
-      console.log("number of spectators: " + spectatorList.length); //debug
-
       io.to("waitingRoom").emit("waitingRoomLog", playerList); //emit to all sockets (users/clients) in the waiting room
       if (playerList.length == 4 && spectatorList.length == 0) {//check if there are four players + no spectators to append the startGame button
         io.to(playerList[0].id).emit("button", "Start The Game"); //emit the start game button to the first player who has joined the waiting room... this is probably broken right now.  
@@ -72,15 +59,8 @@ io.on("connection", (socket) => {
         io.to("waitingRoom").emit("gameReady"); //if there is the required players emit the "ready" heading to all clients
       }
       io.to("waitingRoom").emit("updateSpecCount", spectatorList); //update the spectator count
-
-      console.log("clients in waiting room"); //debug
-      console.log(io.sockets.adapter.rooms.get("waitingRoom")); //debug- this command will let us know what sockets are in the waiting room.
     } else {
-      console.log("invalid character name!"); //idfk maybe this works maybe it doesn't we probably won't ever test it to find out lol
     }
-
-    console.log(playerList); //debug
-    console.log("current player count: " + playerList.length); //debug (i put this here specifially because we do alot of array manipulations and putting this console log before would probably cause brain fucks.)
   });
 
   socket.on("startGame", (socket) => {
@@ -96,7 +76,6 @@ io.on("connection", (socket) => {
       votes: 0
     }
     answerArr.push(pData);
-    console.log(answerArr);
     if(answerArr.length == 4) { // change back to 4 
       io.emit("roundOneVoting", answerArr);
     }
@@ -187,9 +166,9 @@ io.on("connection", (socket) => {
 
 
 http.listen(port, () => {
-  //i lied. more boiler plate code. 🖕
+ 
   console.log(`server running at http://localhost:${port}/`);
 });
-//fin
+
 
 

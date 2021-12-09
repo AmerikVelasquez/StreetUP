@@ -16,6 +16,7 @@
 
 //boiler plate
 var socket = io();
+var group = [];
 
 //when you submit the form which asks for your real name.
 $("form#startForm").submit(function () {
@@ -133,6 +134,7 @@ socket.on("roundTwoVoting", function(answerArr){
 });
 
 socket.on("playerList2", function(playerScores){
+  group = playerScores;
   playerScores.sort((a, b) => parseFloat(b.score) - parseFloat(a.score));
   playerScores.forEach(function(element){
     $("ol#leaderBoardTwo").append(`<li class="score">Name: ${element.charName} | Score: ${element.score}</li>`)
@@ -176,10 +178,16 @@ socket.on("finalRoundVoting", function(answerArr){
   });
 });
 
+
 socket.on("playerList3", function(playerScores){
   playerScores.sort((a, b) => parseFloat(b.score) - parseFloat(a.score));
   playerScores.forEach(function(element){
     $("ol#finalLeaderBoard").append(`<li class="score">Name: ${element.charName} | Score: ${element.score}</li>`)
   });
-  socket.emit("finalRoundButton");
+  setTimeout(winnerReveal, 5000);
 });
+
+
+function winnerReveal () {
+  $(".winner").append(`<h1 id="gameWinner">Congratulations ${group[0].charName} you win!</h1>`)
+}

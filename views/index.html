@@ -5,6 +5,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <link href="/css/styles.css" rel="stylesheet" type="text/css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@500&display=swap" rel="stylesheet">
     <script src="/jquery/jquery.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <title>StreetUP</title>
@@ -16,13 +19,13 @@
     <header>
         <div class="banner">
             <form id="startForm">
-                <h1 class="title">StreetUP</h1>
+                <img src="/img/StreetUP.png" alt="StreetUP title" class="title">
                 <h1>🥊&nbsp;&nbsp;&nbsp;⚔️&nbsp;&nbsp;&nbsp;💉</h1>
                 <p class="label">Your Characters Name:</p>
                     <input class="form-control" id="charName" autocomplete="off" placeholder="zark muckerburg" style="text-align: center;" required />
                     <br>
                     <p class="label">Your character Description:</p>
-                    <input class="form-control" id="charDesc" autocomplete="off" placeholder="owns Face- i mean Meta" style="text-align: center;" required />
+                    <input class="form-control" id="charDesc" autocomplete="off" placeholder="A Javascript wizard" style="text-align: center;" required />
                     <br>
                     <button type="submit" class="btn btn-dark">Let's Fight</button>
                     <br><br>
@@ -53,7 +56,7 @@
             <h1 id = "questionOneName"></h1>
             <form id="questionOneForm">
                 <label for="answerOne">Answer:</label>
-                <input class="form-control" id="answerOne" autocomplete="off" placeholder="Helen Keller" style="text-align: center;" required />
+                <input class="form-control" id="answerOne" autocomplete="off" placeholder="Answer here..." style="text-align: center;" required />
                 <button type="submit" id="questionOneSubmit">Submit Answer!</button>
             </form>
         </div>
@@ -65,7 +68,7 @@
             <div id="selectableAnswers"></div>
         </div>
     </div>
-
+    <div class="noWhiteSpace"></div>
     <div id ="hiddenScoreBoard" class ="hidden">
         <div id="scoreBoard" class ="container">
             <h3>Leaderboard</h3>
@@ -74,12 +77,13 @@
             </ol>
         </div>
     </div>
+    
     <div id="hiddenRoundTwo" class="hidden">
         <div id ="roundTwo" class="container" >
             <h1 id = "questionTwoName"></h1>
             <form id="questionTwoForm">
                 <label for="answerTwo">Answer:</label>
-                <input class="form-control" id="answerTwo" autocomplete="off" placeholder="Helen Keller" style="text-align: center;" required />
+                <input class="form-control" id="answerTwo" autocomplete="off" placeholder="Answer here..." style="text-align: center;" required />
                 <button type="submit" id="questionTwoSubmit">Submit Answer!</button>
             </form>
         </div>
@@ -91,7 +95,7 @@
             <div id="selectableAnswers2"></div>
         </div>
     </div> 
-
+    <div class="noWhiteSpace"></div>
     <div id ="hiddenScoreBoardTwo" class ="hidden">
         <div id="scoreBoardTwo" class ="container">
             <h3>Leaderboard</h3>
@@ -106,7 +110,7 @@
             <h1 id = "finalQuestionName"></h1>
             <form id="finalQuestionForm">
                 <label for="finalAnswer">Answer:</label>
-                <input class="form-control" id="finalAnswer" autocomplete="off" placeholder="Helen Keller" style="text-align: center;" required />
+                <input class="form-control" id="finalAnswer" autocomplete="off" placeholder="Answer here..." style="text-align: center;" required />
                 <button type="submit" id="finalQuestionSubmit">Submit Answer!</button>
             </form>
         </div>
@@ -118,13 +122,17 @@
             <div id="finalSelectableAnswers"></div>
         </div>
     </div> 
+    <div class="noWhiteSpace"></div>
     <div id ="hiddenFinalScoreBoard" class ="hidden">
         <div id="finalScoreBoard" class ="container">
             <h3>Leaderboard</h3>
             <hr/>
             <ol id="finalLeaderBoard">
             </ol>
+            <div class="winner">
+            </div>
         </div>
+    </div>
     </div>
 
     
