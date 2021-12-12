@@ -79,6 +79,6 @@ A web game built using Socket.IO servers to create a game that tracks player sta
 
 * aaron.christian.kauffman@gmail.com
 
-* andrethefirst@gmail.com
+* andrethefirst21@gmail.com
 
 * amerikvelasquez@gmail.com
