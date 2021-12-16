@@ -81,4 +81,4 @@ A web game built using Socket.IO servers to create a game that tracks player sta
 
 * andrethefirst21@gmail.com
 
-* amerikvelasquez@gmail.com
+* amerikvelasquez22@gmail.com
